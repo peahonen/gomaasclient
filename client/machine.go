@@ -131,3 +131,42 @@ func (m *Machine) GetPowerParameters(systemID string) (map[string]interface{}, e
 
 	return params, err
 }
+
+// Turn on the given node with optional user-data and comment.
+func (m *Machine) PowerOn(systemID string, comment string, user_data string) (*entity.Machine, error) {
+	qsp := url.Values{}
+
+	if comment != "" {
+		qsp.Set("comment", comment)
+	}
+	if user_data != "" {
+		qsp.Set("user_data", user_data)
+	}
+	machine := new(entity.Machine)
+	err := m.client(systemID).Post("power_on", qsp, func(data []byte) error {
+		return json.Unmarshal(data, machine)
+	})
+
+	return machine, err
+
+}
+
+// Powers off a given node.
+func (m *Machine) PowerOff(systemID string, soft bool, comment string) (*entity.Machine, error) {
+	qsp := url.Values{}
+
+	if comment != "" {
+		qsp.Set("comment", comment)
+	}
+
+	if soft {
+		qsp.Set("stop_mode", "soft")
+	}
+
+	machine := new(entity.Machine)
+	err := m.client(systemID).Post("power_off", qsp, func(data []byte) error {
+		return json.Unmarshal(data, machine)
+	})
+
+	return machine, err
+}

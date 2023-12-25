@@ -15,4 +15,6 @@ type Machine interface {
 	Lock(systemID string, comment string) (*entity.Machine, error)
 	ClearDefaultGateways(systemID string) (*entity.Machine, error)
 	GetPowerParameters(systemID string) (map[string]interface{}, error)
+	PowerOn(systemID string, comment string, user_data string) (*entity.Machine, error)
+	PowerOff(systemID string, soft bool, comment string) (*entity.Machine, error)
 }
